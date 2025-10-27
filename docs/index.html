@@ -1,263 +1,22 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>DMS Angle Calculator</title>
-    <style>
-        /* Modern Dark Theme Color Palette */
-        :root {
-            --color-bg-primary: #1c2128;   /* Deep charcoal/navy background */
-            --color-bg-secondary: #252a32; /* Card/Input Group background */
-            --color-text-light: #e0e6f0;   /* Light gray/blue text */
-            --color-text-faded: #aeb5c2;   /* Faded text/labels */
-            --color-accent-blue: #02f906;  /* Vibrant Blue for accents/links */
-            --color-accent-green: #3fb950; /* Button Green */
-            --color-paperwork-bg: #2d333b; /* Darker background for code block */
-            --color-result-bg: #007acc;    /* Clean Blue for final result (Slightly less intense) */
-            --color-border: #363e47;       /* Soft border color */
-            --color-text-highlight: #ffffff; /* Explicitly white text for final result */
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 25px;
-            background-color: var(--color-bg-primary);
-            color: var(--color-text-light);
-            border: 1px solid var(--color-border);
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            font-size: 16px;
-        }
-        h1 {
-            color: var(--color-text-light);
-            text-align: center;
-            border-bottom: 3px solid var(--color-accent-blue);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-            font-size: 2.2em;
-        }
-        h2 {
-            color: var(--color-accent-blue);
-            border-bottom: 2px solid var(--color-border);
-            padding-bottom: 5px;
-            margin-top: 30px;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-            color: var(--color-text-faded);
-            font-size: 1.1em;
-        }
-        .input-group {
-            margin-bottom: 25px;
-            padding: 20px;
-            background-color: var(--color-bg-secondary);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .dms-input input, .factor-input input {
-            width: 60px;
-            text-align: center;
-            margin-right: 15px;
-            padding: 10px;
-            border: 2px solid var(--color-border);
-            border-radius: 5px;
-            transition: border-color 0.3s;
-            font-size: 1em;
-            background-color: #1c2128;
-            color: var(--color-text-light);
-        }
-        .factor-input input {
-            width: 200px;
-        }
-        .dms-input input:focus, .factor-input input:focus, select:focus {
-             border-color: var(--color-accent-blue);
-             outline: none;
-        }
-        select {
-            padding: 10px;
-            border: 2px solid var(--color-border);
-            border-radius: 5px;
-            font-size: 1em;
-            background-color: #1c2128;
-            color: var(--color-text-light);
-            cursor: pointer;
-        }
-        button {
-            background-color: var(--color-accent-green);
-            color: #fff;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-        button:hover {
-            background-color: #369c47;
-            transform: translateY(-1px);
-        }
-        .paperwork {
-            background-color: var(--color-paperwork-bg);
-            padding: 25px;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            white-space: pre;
-            font-family: 'Consolas', 'Courier New', monospace;
-            overflow-x: auto;
-            line-height: 1.6;
-            font-size: 1.05em;
-            color: #f4f0f7; /* Soft blue color for "code" text */
-            box-shadow: inset 0 0 8px rgba(160, 40, 40, 0.3);
-        }
-        .result {
-            font-size: 1.5em;
-            font-weight: 800;
-            margin-top: 30px;
-            padding: 20px;
-            /* FIX: Ensure high contrast text on the result background */
-            background-color: var(--color-result-bg);
-            color: var(--color-text-highlight); /* **Changed to White Text** */
-            border: 1px solid #1677df;
-            border-radius: 8px;
-            text-align: center;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(191, 202, 212, 0.5);
-        }
-    </style>
-</head>
-<body>
-    <h1>D:M:S Angle Calculator 📐</h1>
-    <form method="POST">
-
-        <div class="input-group">
-            <label for="calc_type">Select Operation:</label>
-            <select name="calc_type" id="calc_type" required onchange="toggleInputs(); saveCalcType()">
-                <option value="ADD">Addition (+)</option>
-                <option value="SUB">Subtraction (-)</option>
-                <option value="MULT">Multiplication (x)</option>
-                <option value="DIV">Division (÷)</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Angle A (D:M:S)</label>
-            <div class="dms-input">
-                <input type="number" name="A_d" placeholder="Degrees (D)" value="120" required>
-                <input type="number" name="A_m" placeholder="Minutes (M)" value="40" min="0" max="59" required>
-                <input type="number" name="A_s" placeholder="Seconds (S)" value="12" min="0" max="59" required>
-            </div>
-        </div>
-
-        <div id="angleBGroup" class="input-group">
-            <label>Angle B (D:M:S)</label>
-            <div class="dms-input">
-                <input type="number" name="B_d" placeholder="Degrees (D)" value="25">
-                <input type="number" name="B_m" placeholder="Minutes (M)" value="10" min="0" max="59">
-                <input type="number" name="B_s" placeholder="Seconds (S)" value="45" min="0" max="59">
-            </div>
-        </div>
-
-        <div id="factorGroup" class="input-group" style="display: none;">
-            <label>Factor (Multiplier / Divisor)</label>
-            <div class="factor-input">
-                <input type="number" name="factor" placeholder="Enter Factor (e.g., 25)" value="25" required>
-            </div>
-        </div>
-
-        <button type="submit">Calculate Angle ➡️</button>
-    </form>
-
-    {% if result %}
-    <hr style="margin: 45px 0; border: 0; border-top: 3px dashed var(--color-border);">
-    <div class="result">
-        FINAL ANSWER: {{ result | safe }}
-    </div>
-    <h2>Paper-and-Pen Steps: ✍️</h2>
-    <div class="paperwork">
-        {{ paperwork | safe }}
-    </div>
-    {% endif %}
-
-    <script>
-        const calcTypeSelect = document.getElementById('calc_type');
-        const angleBGroup = document.getElementById('angleBGroup');
-        const factorGroup = document.getElementById('factorGroup');
-        const B_inputs = angleBGroup.querySelectorAll('input');
-        const factor_input = factorGroup.querySelector('input[name="factor"]');
-
-        /**
-         * Toggles the visibility and 'required' attribute for Angle B vs Factor inputs.
-         */
-        function toggleInputs() {
-            const calcType = calcTypeSelect.value;
-            
-            if (calcType === 'ADD' || calcType === 'SUB') {
-                angleBGroup.style.display = 'block';
-                factorGroup.style.display = 'none';
-                
-                // Set required attributes for validation
-                B_inputs.forEach(input => input.setAttribute('required', 'required'));
-                factor_input.removeAttribute('required');
-
-            } else if (calcType === 'MULT' || calcType === 'DIV') {
-                angleBGroup.style.display = 'none';
-                factorGroup.style.display = 'block';
-                
-                // Set required attributes for validation
-                B_inputs.forEach(input => input.removeAttribute('required'));
-                factor_input.setAttribute('required', 'required');
-            }
-        }
-        
-        /**
-         * Saves the currently selected operation to Local Storage.
-         */
-        function saveCalcType() {
-            localStorage.setItem('dms_calc_type', calcTypeSelect.value);
-        }
-
-        /**
-         * Restores the selected operation from Local Storage on page load.
-         */
-        function restoreCalcType() {
-            const savedType = localStorage.getItem('dms_calc_type');
-            if (savedType) {
-                calcTypeSelect.value = savedType;
-            }
-            // Ensure the correct inputs are shown after restoration
-            toggleInputs();
-        }
-
-        // Run the restoration and toggle on page load
-        document.addEventListener('DOMContentLoaded', restoreCalcType);
-    </script>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8" />
     <title>DMS Angle Calculator</title>
     <style>
-        /* Modern Light Theme Color Palette */
+        /* Modern Light Theme Color Palette (kept from your original template) */
         :root {
-    --color-bg-primary: #343440;   /* CARD/INPUT BACKGROUND: Dark gray-purple */
-    --color-bg-secondary: #272733; /* PAGE BACKGROUND: Deep midnight blue/plum */
-    --color-text-dark: #d3e5f0;    /* MAIN TEXT: Very light lavender-white */
-    --color-text-medium: #18dae8ed;  /* LABEL/FADED TEXT: Pale gray-purple */
-    --color-accent-blue: #08f0d1;  /* ACCENT/HIGHLIGHT: Soft Lavender */
-    --color-accent-green: #ec8106; /* BUTTON COLOR: Muted bright lime */
-    --color-paperwork-bg: #2d2d3a; /* PAPERWORK/CODE BLOCK BACKGROUND */
-    --color-result-bg: #fefeff;    /* RESULT BOX BACKGROUND: Vibrant Purple */
-    --color-border: #9595b4;       /* GENERAL BORDER: Medium cool gray */
-    --color-text-highlight: #7248e4; /* RESULT BOX TEXT: Pure white */
-}
+            --color-bg-primary: #343440;   /* CARD/INPUT BACKGROUND: Dark gray-purple */
+            --color-bg-secondary: #272733; /* PAGE BACKGROUND: Deep midnight blue/plum */
+            --color-text-dark: #d3e5f0;    /* MAIN TEXT: Very light lavender-white */
+            --color-text-medium: #18dae8ed;  /* LABEL/FADED TEXT: Pale gray-purple */
+            --color-accent-blue: #08f0d1;  /* ACCENT/HIGHLIGHT: Soft Lavender */
+            --color-accent-green: #ec8106; /* BUTTON COLOR: Muted bright lime */
+            --color-paperwork-bg: #2d2d3a; /* PAPERWORK/CODE BLOCK BACKGROUND */
+            --color-result-bg: #fefeff;    /* RESULT BOX BACKGROUND: Vibrant Purple */
+            --color-border: #9595b4;       /* GENERAL BORDER: Medium cool gray */
+            --color-text-highlight: #7248e4; /* RESULT BOX TEXT: Pure white */
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             max-width: 900px;
@@ -272,124 +31,110 @@
         }
         h1 {
             color: var(--color-text-dark);
-            /* FONT SIZE: Main title size */
-            font-size: 2.3em; 
+            font-size: 2.3em;
             border-bottom: 3px solid var(--color-accent-blue);
-            padding-bottom: 15px; /* BOX SIZE: Spacing below the title/border */
+            padding-bottom: 15px;
             margin-bottom: 30px;
         }
         h2 {
             color: var(--color-accent-blue);
-            /* FONT SIZE: Section title size (Paperwork) */
-            font-size: 1em; 
+            font-size: 1em;
             border-bottom: 2px solid var(--color-border);
             padding-bottom: 5px;
             margin-top: 30px;
         }
         label {
             color: var(--color-text-medium);
-            /* FONT SIZE: Label text size (e.g., 'Angle A (D:M:S)') */
-            font-size: 1.15em; 
+            font-size: 1.15em;
             margin-top: 15px;
+            display:block;
         }
         .input-group {
-            /* COLOR: Background color for cards (e.g., Angle A, Angle B, etc.) */
-            background-color: var(--color-bg-primary); 
-            /* BOX SIZE: Inner spacing within the card */
-            padding: 25px; 
-            margin-bottom: 25px; /* BOX SIZE: Spacing between cards */
+            background-color: var(--color-bg-primary);
+            padding: 25px;
+            margin-bottom: 25px;
             border: 1px solid var(--color-border);
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .dms-input input, .factor-input input {
-            /* COLOR: Input text color */
-            color: var(--color-text-dark); 
-            /* COLOR: Input background color */
-            background-color: var(--color-bg-primary); 
-            
-            /* FONT SIZE: Text inside the input box */
-            font-size: 1.1em; 
-            /* BOX SIZE: Width of D, M, S inputs */
-            width: 70px; 
-            /* BOX SIZE: Inner spacing of the input field */
-            padding: 12px; 
+            color: var(--color-text-dark);
+            background-color: var(--color-bg-primary);
+            font-size: 1.1em;
+            width: 70px;
+            padding: 12px;
             border: 1px solid var(--color-border);
             border-radius: 5px;
+            margin-right:8px;
         }
         .factor-input input {
-            /* BOX SIZE: Width of Factor input */
-            width: 250px; 
+            width: 250px;
         }
         select {
             color: var(--color-text-dark);
-            background-color: var(--color-bg-primary); 
-            /* FONT SIZE: Text inside the dropdown */
-            font-size: 1.1em; 
-            /* BOX SIZE: Inner spacing of the dropdown */
-            padding: 12px; 
+            background-color: var(--color-bg-primary);
+            font-size: 1.1em;
+            padding: 12px;
             border: 1px solid var(--color-border);
             border-radius: 5px;
         }
         button {
-            /* COLOR: Button background color */
             background-color: var(--color-accent-green);
-            /* FONT SIZE: Button text size */
-            font-size: 1.2em; 
+            font-size: 1.2em;
             font-weight: bold;
-            /* BOX SIZE: Button size */
-            padding: 14px 30px; 
+            padding: 14px 30px;
             border-radius: 5px;
+            border: none;
+            cursor: pointer;
         }
         button:hover {
-            background-color: #05f73a; /* COLOR: Hover state color */
+            background-color: #05f73a;
         }
         .paperwork {
-            /* COLOR: Paperwork background color */
-            background-color: var(--color-paperwork-bg); 
-            /* BOX SIZE: Inner spacing of the paperwork box */
-            padding: 25px; 
-            /* FONT SIZE: Code block text size */
-            font-size: 1em; 
-            color: #f8fbfb; 
+            background-color: var(--color-paperwork-bg);
+            padding: 25px;
+            font-size: 1em;
+            color: #f8fbfb;
             border: 2px solid var(--color-border);
             border-radius: 8px;
+            overflow-x:auto;
         }
-        /* --- RESULT SECTION STYLING --- */
         .result {
-            /* COLOR: Final result box background color */
-            background-color: var(--color-result-bg); 
-            /* BOX SIZE: Inner spacing of the result box */
-            padding: 30px; 
-        
+            background-color: var(--color-result-bg);
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(235, 234, 238, 0.3);
             margin-top: 30px;
         }
-
         .result .result-label {
-            /* FONT SIZE: Size of "FINAL ANSWER:" */
-            font-size: 2em; 
+            font-size: 2em;
             color: rgba(232, 108, 13, 0.912);
+            display:block;
+        }
+        .result .result-value {
+            font-size: 2em;
+            color: var(--color-text-highlight);
+            padding: 0 10px;
+            background-color: rgba(245, 237, 237, 0.1);
+            display:inline-block;
+            margin-top:12px;
         }
 
-        .result .result-value {
-            /* FONT SIZE: Size of the angle value (e.g., 4:49:37) */
-            font-size: 2em; 
-            color: var(--color-text-highlight);
-            /* BOX SIZE: Small shadow/padding under the result text */
-            padding: 0 10px; 
-            background-color: rgba(245, 237, 237, 0.1);
+        pre.console {
+            white-space: pre; /* preserve spaces/newlines exactly */
+            font-family: "Courier New", Courier, monospace;
+            margin: 0;
         }
     </style>
 </head>
 <body>
     <h1>D:M:S Angle Calculator 📐</h1>
-    <form method="POST">
 
+    <!-- Recreated form (original Flask template style) -->
+    <form id="calcForm" onsubmit="event.preventDefault(); onCalculate();">
         <div class="input-group">
             <label for="calc_type">Select Operation:</label>
-            <select name="calc_type" id="calc_type" required onchange="toggleInputs(); saveCalcType()">
+            <select id="calc_type" required onchange="toggleInputs(); saveCalcType()">
                 <option value="ADD">Addition (+)</option>
                 <option value="SUB">Subtraction (-)</option>
                 <option value="MULT">Multiplication (x)</option>
@@ -400,102 +145,409 @@
         <div class="input-group">
             <label>Angle A (D:M:S)</label>
             <div class="dms-input">
-                <input type="number" name="A_d" placeholder="Degrees (D)" value="120" required>
-                <input type="number" name="A_m" placeholder="Minutes (M)" value="40" min="0" max="59" required>
-                <input type="number" name="A_s" placeholder="Seconds (S)" value="12" min="0" max="59" required>
+                <input id="A_d" type="number" placeholder="Degrees (D)" value="120" required>
+                <input id="A_m" type="number" placeholder="Minutes (M)" value="40" min="0" max="59" required>
+                <input id="A_s" type="number" placeholder="Seconds (S)" value="12" min="0" max="59" required>
             </div>
         </div>
 
         <div id="angleBGroup" class="input-group">
             <label>Angle B (D:M:S)</label>
             <div class="dms-input">
-                <input type="number" name="B_d" placeholder="Degrees (D)" value="25">
-                <input type="number" name="B_m" placeholder="Minutes (M)" value="10" min="0" max="59">
-                <input type="number" name="B_s" placeholder="Seconds (S)" value="45" min="0" max="59">
+                <input id="B_d" type="number" placeholder="Degrees (D)" value="25">
+                <input id="B_m" type="number" placeholder="Minutes (M)" value="10" min="0" max="59">
+                <input id="B_s" type="number" placeholder="Seconds (S)" value="45" min="0" max="59">
             </div>
         </div>
 
-        <div id="factorGroup" class="input-group" style="display: none;">
+        <div id="factorGroup" class="input-group" style="display:none;">
             <label>Factor (Multiplier / Divisor)</label>
             <div class="factor-input">
-                <input type="number" name="factor" placeholder="Enter Factor (e.g., 25)" value="25" required>
+                <input id="factor" type="number" placeholder="Enter Factor (e.g., 25)" value="25">
             </div>
         </div>
 
         <button type="submit">Calculate Angle ➡️</button>
     </form>
 
-    {% if result %}
-    <hr style="margin: 45px 0; border: 0; border-top: 3px dashed var(--color-border);">
-    <div class="result">
-        <span class="result-label">FINAL ANSWER:</span> 
-        <span class="result-value">
-            {{ result | safe }} 
-        </span>
-        <span class="result-operation">
-            {% if calc_type_value %}
-                ({{ calc_type_value }} Operation)
-            {% endif %}
-        </span>
+    <!-- Where we show final result and paperwork -->
+    <div id="resultBlock" style="display:none;">
+        <hr style="margin: 45px 0; border: 0; border-top: 3px dashed var(--color-border);">
+        <div class="result">
+            <span class="result-label">FINAL ANSWER:</span>
+            <span id="resultValue" class="result-value"></span>
+            <div id="resultOperation" style="margin-top:10px; color:var(--color-text-medium)"></div>
+        </div>
+
+        <h2>Paper-and-Pen Steps: ✍️</h2>
+        <div class="paperwork">
+            <pre id="paperwork" class="console"></pre>
+        </div>
     </div>
-    <h2>Paper-and-Pen Steps: ✍️</h2>
-    <div class="paperwork">
-        {{ paperwork | safe }}
-    </div>
-    {% endif %}
 
     <script>
-        const calcTypeSelect = document.getElementById('calc_type');
-        const angleBGroup = document.getElementById('angleBGroup');
-        const factorGroup = document.getElementById('factorGroup');
-        const B_inputs = angleBGroup.querySelectorAll('input');
-        const factor_input = factorGroup.querySelector('input[name="factor"]');
+    /* ---------- Utility formatting (mimics format_dms) ---------- */
+    function format_dms(d, m, s, separator=':') {
+        // mimic Python f"{d:02}{separator}{m:02}{separator}{s:02}"
+        const pad = (n) => {
+            const s = String(Math.abs(n));
+            return (n < 0) ? '-' + s.padStart(2,'0') : s.padStart(2,'0');
+        };
+        // Note: In Python the sign may be on degrees only -- we will handle sign separately where needed.
+        return `${String(d).padStart(2,'0')}${separator}${String(m).padStart(2,'0')}${separator}${String(s).padStart(2,'0')}`;
+    }
 
-        /**
-         * Toggles the visibility and 'required' attribute for Angle B vs Factor inputs.
-         */
-        function toggleInputs() {
-            const calcType = calcTypeSelect.value;
-            
-            if (calcType === 'ADD' || calcType === 'SUB') {
-                angleBGroup.style.display = 'block';
-                factorGroup.style.display = 'none';
-                
-                // Set required attributes for validation
-                B_inputs.forEach(input => input.setAttribute('required', 'required'));
-                factor_input.removeAttribute('required');
+    /* ---------- Functions that reproduce your Python prints exactly ---------- */
 
-            } else if (calcType === 'MULT' || calcType === 'DIV') {
-                angleBGroup.style.display = 'none';
-                factorGroup.style.display = 'block';
-                
-                // Set required attributes for validation
-                B_inputs.forEach(input => input.removeAttribute('required'));
-                factor_input.setAttribute('required', 'required');
+    function perform_addition(A_d, A_m, A_s, B_d, B_m, B_s) {
+        let out = "";
+        out += "\n--- ADDITION: Paper-and-Pen Steps ---\n\n";
+
+        // 1. Component Addition
+        let R_s = A_s + B_s;
+        let R_m = A_m + B_m;
+        let R_d = A_d + B_d;
+
+        out += "      D     M     S\n";
+        out += `    ${String(A_d).padStart(2,'0')} : ${String(A_m).padStart(2,'0')} : ${String(A_s).padStart(2,'0')}\n`;
+        out += `  + ${String(B_d).padStart(2,'0')} : ${String(B_m).padStart(2,'0')} : ${String(B_s).padStart(2,'0')}\n`;
+        out += "  -------------------\n";
+        out += `  = ${String(R_d).padStart(2,'0')} : ${String(R_m).padStart(2,'0')} : ${String(R_s).padStart(2,'0')} (Initial Sum)\n\n`;
+
+        // 2. Normalize Seconds (Carry to Minutes)
+        let s_carry = Math.floor(R_s / 60);
+        let R_s_norm = R_s % 60;
+        let R_m_temp = R_m + s_carry;
+
+        if (s_carry > 0) {
+            out += "\n--- Carry Seconds (S -> M) ---\n";
+            out += `  * ${R_s}'' is ${s_carry}' and ${R_s_norm}''\n`;
+            out += `  * Carry ${s_carry} to Minutes (New M: ${R_m_temp})\n`;
+            R_m = R_m_temp;
+        }
+
+        // 3. Normalize Minutes (Carry to Degrees)
+        let m_carry = Math.floor(R_m / 60);
+        let R_m_norm = R_m % 60;
+        let R_d_final = R_d + m_carry;
+
+        if (m_carry > 0) {
+            out += "\n--- Carry Minutes (M -> D) ---\n";
+            out += `  * ${R_m}' is ${m_carry}° and ${R_m_norm}'\n`;
+            out += `  * Carry ${m_carry} to Degrees (Final D: ${R_d_final})\n`;
+        }
+
+        out += "\n-----------------------------\n";
+        out += `  Final Normalized Result:\n`;
+        out += `  = ${String(R_d_final).padStart(2,'0')} : ${String(R_m_norm).padStart(2,'0')} : ${String(R_s_norm).padStart(2,'0')}\n`;
+
+        // Return both result and paperwork text
+        return { d: R_d_final, m: R_m_norm, s: R_s_norm, paperwork: out };
+    }
+
+    function perform_subtraction(A_d, A_m, A_s, B_d, B_m, B_s) {
+        let out = "";
+        out += "\n--- SUBTRACTION: Paper-and-Pen Steps (Borrowing) ---\n\n";
+
+        let A_sec = (A_d * 3600) + (A_m * 60) + A_s;
+        let B_sec = (B_d * 3600) + (B_m * 60) + B_s;
+        let final_sign = 1;
+
+        // If B is larger, swap for positive borrowing/display, and apply sign later
+        if (A_sec < B_sec) {
+            // Swap the angle components for internal calculation
+            [A_d, B_d] = [B_d, A_d];
+            [A_m, B_m] = [B_m, A_m];
+            [A_s, B_s] = [B_s, A_s];
+            final_sign = -1;
+            out += "Note: Angles swapped to perform (Larger - Smaller). Final result will be negative.\n\n";
+        }
+
+        // Start D:M:S Subtraction (Borrowing)
+        let A_m_borrow = A_m;
+        let A_d_borrow = A_d;
+
+        out += "      D     M     S\n";
+        out += `    ${String(A_d).padStart(2,'0')} : ${String(A_m).padStart(2,'0')} : ${String(A_s).padStart(2,'0')}\n`;
+        out += `  - ${String(B_d).padStart(2,'0')} : ${String(B_m).padStart(2,'0')} : ${String(B_s).padStart(2,'0')}\n`;
+        out += "  -------------------\n\n";
+
+        // 1. Seconds Subtraction (Borrow from Minutes if needed)
+        let R_s = A_s - B_s;
+        if (R_s < 0) {
+            A_m_borrow -= 1;
+            R_s += 60;
+            out += `  * Borrow 1' from Minutes: ${A_m}' -> ${A_m_borrow}' and add 60'' to Seconds.\n`;
+        }
+
+        // 2. Minutes Subtraction (Borrow from Degrees if needed)
+        let R_m = A_m_borrow - B_m;
+        if (R_m < 0) {
+            A_d_borrow -= 1;
+            R_m += 60;
+            out += `  * Borrow 1° from Degrees: ${A_d_borrow + 1}° -> ${A_d_borrow}° and add 60' to Minutes.\n`;
+        }
+
+        // 3. Degrees Subtraction
+        let R_d = A_d_borrow - B_d;
+
+        out += "\n  Final Subtraction of components:\n";
+        out += `  = ${String(R_d).padStart(2,'0')} : ${String(R_m).padStart(2,'0')} : ${String(R_s).padStart(2,'0')}\n`;
+
+        let R_d_final = R_d * final_sign;
+        return { d: R_d_final, m: R_m, s: R_s, paperwork: out };
+    }
+
+    function perform_multiplication(A_d, A_m, A_s, factor) {
+        let out = "";
+        out += "\n--- MULTIPLICATION: Paper-and-Pen Steps (Component Multiplication & Carry) ---\n\n";
+
+        // 1. Simple Component Multiplication
+        let mult_s = A_s * factor;
+        let mult_m = A_m * factor;
+        let mult_d = A_d * factor;
+
+        out += `  ${String(A_d).padStart(2,'0')} : ${String(A_m).padStart(2,'0')} : ${String(A_s).padStart(2,'0')}\n`;
+        out += `  x ${factor}\n`;
+        out += "  -------------------\n";
+        out += `  ${String(mult_d).padStart(4,'0')} : ${String(mult_m).padStart(4,'0')} : ${String(mult_s).padStart(4,'0')} (Initial Product)\n\n`;
+
+        // 2. Normalize Seconds (Carry to Minutes)
+        let s_carry = Math.floor(mult_s / 60);
+        let R_s_norm = mult_s % 60;
+        let R_m_temp = mult_m + s_carry;
+        let R_m, R_d_final;
+
+        if (s_carry > 0) {
+            out += "\n--- Carry Seconds (S -> M) ---\n";
+            out += `  * ${mult_s}'' is ${s_carry}' and ${R_s_norm}''\n`;
+            out += `  * Carry ${s_carry} to Minutes.\n`;
+            R_m = R_m_temp;
+        } else {
+            R_m = mult_m;
+        }
+
+        // 3. Normalize Minutes (Carry to Degrees)
+        let m_carry = Math.floor(R_m / 60);
+        let R_m_norm = R_m % 60;
+        R_d_final = mult_d + m_carry;
+
+        if (m_carry > 0) {
+            out += "\n--- Carry Minutes (M -> D) ---\n";
+            out += `  * ${R_m}' is ${m_carry}° and ${R_m_norm}'\n`;
+            out += `  * Carry ${m_carry} to Degrees.\n`;
+        }
+
+        // 4. Final output style to match the paper
+        out += "\n\n";
+        out += `= ${R_d_final} : ${String(R_m_norm).padStart(2,'0')} : ${String(R_s_norm).padStart(2,'0')} = Answer\n`;
+
+        return { d: R_d_final, m: R_m_norm, s: R_s_norm, paperwork: out };
+    }
+
+    function perform_division(A_d_input, A_m, A_s, factor) {
+        let out = "";
+        let A_d = A_d_input;
+        out += "\n--- DIVISION: Long Division Paperwork ---\n\n";
+
+        // --- Pre-Calculation (Ensuring correct final result) ---
+        let sign = 1;
+        if (A_d < 0) {
+            sign = -1;
+            A_d = Math.abs(A_d);
+            out += `Note: Input degree was negative. Result will be negative.\n`;
+        }
+
+        // 1. Degrees Division
+        let Q_d = Math.floor(A_d / factor);
+        let R_d = A_d % factor;
+        let R_d_to_m = R_d * 60;
+        let D_d_sub = Q_d * factor;
+
+        // 2. Minutes Division
+        let D_m = R_d_to_m + A_m;
+        let Q_m = Math.floor(D_m / factor);
+        let R_m = D_m % factor;
+        let R_m_to_s = R_m * 60;
+
+        // 3. Seconds Division
+        let D_s = R_m_to_s + A_s;
+        let Q_s = Math.floor(D_s / factor);
+        let R_s = D_s % factor;
+
+        // --- Dynamic Calculation for Minutes Subtraction Printout ---
+        let Q_m_p1_digit = Math.floor(Q_m / 10);
+        let Q_m_p2_digit = Q_m % 10;
+
+        let D_m_sub_p1_print = Q_m_p1_digit * factor;
+        let D_m_sub_p1_value = D_m_sub_p1_print * 10;
+        let D_m_sub_p2 = Q_m_p2_digit * factor;
+
+        // --- Dynamic Calculation for Seconds Subtraction Printout ---
+        let Q_s_p1_digit = Math.floor(Q_s / 10);
+        let Q_s_p2_digit = Q_s % 10;
+
+        let D_s_sub_p1_print = Q_s_p1_digit * factor;
+        let D_s_sub_p1_value = D_s_sub_p1_print * 10;
+
+        let D_s_sub_p2_print = Q_s_p2_digit * factor;
+
+        let R_s_p1_print = D_s - D_s_sub_p1_value;
+
+        // --- Paperwork Display (Matching Image Alignment and Steps) ---
+        out += ` ${factor}) ${A_d} : ${A_m} : ${A_s} [${Q_d}-${Q_m}-${Q_s}\n\n`;
+
+        // --- Degrees Division ---
+        out += `   - ${D_d_sub} \n`;
+        out += "  ----------------- \n\n";
+
+        // Output: 20x60 -> convert to minute
+        out += `      ${R_d} x 60\n\n`;
+
+        // --- Minutes Division Setup ---
+        out += `      ${R_d_to_m} + ${A_m}\n\n`;
+        out += "    -----------------\n";
+        out += `      ${D_m}\n\n`;
+
+        // --- Minutes Division (Two-Step Subtraction) ---
+        out += `    - ${D_m_sub_p1_print}\n`;
+        out += "    -----------------------\n\n";
+
+        let R_m_temp_print = D_m - D_m_sub_p1_value; // intermediate remainder
+        out += `     ${R_m_temp_print}\n\n`;
+
+        out += `   - ${D_m_sub_p2}\n`;
+        out += "    -----------------\n\n";
+
+        out += `      ${R_m}\n`;
+        out += `      ${R_m} x 60\n\n`;
+
+        // --- Seconds Division Setup ---
+        out += "    --------------------\n";
+        out += `      ${R_m_to_s} + ${A_s} = ${D_s}\n\n`;
+
+        // Line 1: D_s
+        out += `      ${D_s}\n\n`;
+
+        // Line 2: - D_s_sub_p1_print
+        out += `    - ${D_s_sub_p1_print}\n`;
+        out += "   --------------------\n\n";
+
+        // Line 3: R_s_p1_print
+        out += `      ${R_s_p1_print}\n\n`;
+
+        // Line 4: - D_s_sub_p2_print
+        out += `    - ${D_s_sub_p2_print}\n`;
+        out += "  -----------------\n\n";
+
+        // Line 5: final remainder R_s
+        out += `      ${R_s}\n`;
+        out += "   **********************************************************\n\n";
+
+        // Final Result is returned
+        return { d: Q_d * sign, m: Q_m, s: Q_s, paperwork: out };
+    }
+
+    /* ---------- UI glue: replicate behavior of Flask app but run in browser ---------- */
+
+    function onCalculate() {
+        // Read inputs
+        const calc_type = document.getElementById('calc_type').value;
+        const A_d = parseInt(document.getElementById('A_d').value) || 0;
+        const A_m = parseInt(document.getElementById('A_m').value) || 0;
+        const A_s = parseInt(document.getElementById('A_s').value) || 0;
+
+        let result = { d:0, m:0, s:0, paperwork: '' };
+
+        try {
+            if (calc_type === 'ADD' || calc_type === 'SUB') {
+                const B_d = parseInt(document.getElementById('B_d').value) || 0;
+                const B_m = parseInt(document.getElementById('B_m').value) || 0;
+                const B_s = parseInt(document.getElementById('B_s').value) || 0;
+
+                if (calc_type === 'ADD') {
+                    result = perform_addition(A_d, A_m, A_s, B_d, B_m, B_s);
+                } else {
+                    result = perform_subtraction(A_d, A_m, A_s, B_d, B_m, B_s);
+                }
+            } else if (calc_type === 'MULT' || calc_type === 'DIV') {
+                const factor = parseInt(document.getElementById('factor').value);
+                if (isNaN(factor) || !isFinite(factor)) {
+                    alert("Error: Please enter a valid integer for factor.");
+                    return;
+                }
+                if (calc_type === 'MULT') {
+                    result = perform_multiplication(A_d, A_m, A_s, factor);
+                } else {
+                    if (factor === 0) {
+                        alert("Error: Cannot divide by zero factor.");
+                        return;
+                    }
+                    result = perform_division(A_d, A_m, A_s, factor);
+                }
             }
-        }
-        
-        /**
-         * Saves the currently selected operation to Local Storage.
-         */
-        function saveCalcType() {
-            localStorage.setItem('dms_calc_type', calcTypeSelect.value);
-        }
 
-        /**
-         * Restores the selected operation from Local Storage on page load.
-         */
-        function restoreCalcType() {
-            const savedType = localStorage.getItem('dms_calc_type');
-            if (savedType) {
-                calcTypeSelect.value = savedType;
+            // Show paperwork and final result (match your Flask printing)
+            // For DIV, Python prints "ans -- {R_d} : {R_m} : {R_s}"
+            // For others, it prints "FINAL ANSWER" and "Result (TYPE): {format_dms}"
+            document.getElementById('paperwork').textContent = result.paperwork;
+            document.getElementById('resultBlock').style.display = 'block';
+
+            if (calc_type === 'DIV') {
+                // As Python does (ans -- ...)
+                document.getElementById('resultValue').textContent = `ans -- ${result.d} : ${result.m} : ${result.s}`;
+                document.getElementById('resultOperation').textContent = `(DIV Operation)`;
+            } else {
+                document.getElementById('resultValue').textContent = `Result (${calc_type}): ${String(result.d).padStart(2,'0')}:${String(result.m).padStart(2,'0')}:${String(result.s).padStart(2,'0')}`;
+                document.getElementById('resultOperation').textContent = `(${calc_type} Operation)`;
             }
-            // Ensure the correct inputs are shown after restoration
-            toggleInputs();
-        }
 
-        // Run the restoration and toggle on page load
-        document.addEventListener('DOMContentLoaded', restoreCalcType);
+            // Scroll to paperwork for convenience
+            document.getElementById('paperwork').scrollIntoView({behavior:'smooth', block:'start'});
+        } catch (err) {
+            alert("An unexpected error occurred: " + err);
+            console.error(err);
+        }
+    }
+
+    /* ---------- Input toggles and localStorage (same behavior as your template) ---------- */
+    const calcTypeSelect = document.getElementById('calc_type');
+    const angleBGroup = document.getElementById('angleBGroup');
+    const factorGroup = document.getElementById('factorGroup');
+
+    function toggleInputs() {
+        const calcType = calcTypeSelect.value;
+        if (calcType === 'ADD' || calcType === 'SUB') {
+            angleBGroup.style.display = 'block';
+            factorGroup.style.display = 'none';
+            // Set required attributes
+            document.getElementById('B_d').required = true;
+            document.getElementById('B_m').required = true;
+            document.getElementById('B_s').required = true;
+            document.getElementById('factor').required = false;
+        } else {
+            angleBGroup.style.display = 'none';
+            factorGroup.style.display = 'block';
+            document.getElementById('B_d').required = false;
+            document.getElementById('B_m').required = false;
+            document.getElementById('B_s').required = false;
+            document.getElementById('factor').required = true;
+        }
+    }
+
+    function saveCalcType() {
+        localStorage.setItem('dms_calc_type', calcTypeSelect.value);
+    }
+
+    function restoreCalcType() {
+        const savedType = localStorage.getItem('dms_calc_type');
+        if (savedType) {
+            calcTypeSelect.value = savedType;
+        }
+        toggleInputs();
+    }
+
+    document.addEventListener('DOMContentLoaded', restoreCalcType);
     </script>
 </body>
 </html>
