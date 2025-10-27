@@ -1,0 +1,501 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>DMS Angle Calculator</title>
+    <style>
+        /* Modern Dark Theme Color Palette */
+        :root {
+            --color-bg-primary: #1c2128;   /* Deep charcoal/navy background */
+            --color-bg-secondary: #252a32; /* Card/Input Group background */
+            --color-text-light: #e0e6f0;   /* Light gray/blue text */
+            --color-text-faded: #aeb5c2;   /* Faded text/labels */
+            --color-accent-blue: #02f906;  /* Vibrant Blue for accents/links */
+            --color-accent-green: #3fb950; /* Button Green */
+            --color-paperwork-bg: #2d333b; /* Darker background for code block */
+            --color-result-bg: #007acc;    /* Clean Blue for final result (Slightly less intense) */
+            --color-border: #363e47;       /* Soft border color */
+            --color-text-highlight: #ffffff; /* Explicitly white text for final result */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-light);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            font-size: 16px;
+        }
+        h1 {
+            color: var(--color-text-light);
+            text-align: center;
+            border-bottom: 3px solid var(--color-accent-blue);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        h2 {
+            color: var(--color-accent-blue);
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--color-text-faded);
+            font-size: 1.1em;
+        }
+        .input-group {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .dms-input input, .factor-input input {
+            width: 60px;
+            text-align: center;
+            margin-right: 15px;
+            padding: 10px;
+            border: 2px solid var(--color-border);
+            border-radius: 5px;
+            transition: border-color 0.3s;
+            font-size: 1em;
+            background-color: #1c2128;
+            color: var(--color-text-light);
+        }
+        .factor-input input {
+            width: 200px;
+        }
+        .dms-input input:focus, .factor-input input:focus, select:focus {
+             border-color: var(--color-accent-blue);
+             outline: none;
+        }
+        select {
+            padding: 10px;
+            border: 2px solid var(--color-border);
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: #1c2128;
+            color: var(--color-text-light);
+            cursor: pointer;
+        }
+        button {
+            background-color: var(--color-accent-green);
+            color: #fff;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #369c47;
+            transform: translateY(-1px);
+        }
+        .paperwork {
+            background-color: var(--color-paperwork-bg);
+            padding: 25px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            white-space: pre;
+            font-family: 'Consolas', 'Courier New', monospace;
+            overflow-x: auto;
+            line-height: 1.6;
+            font-size: 1.05em;
+            color: #f4f0f7; /* Soft blue color for "code" text */
+            box-shadow: inset 0 0 8px rgba(160, 40, 40, 0.3);
+        }
+        .result {
+            font-size: 1.5em;
+            font-weight: 800;
+            margin-top: 30px;
+            padding: 20px;
+            /* FIX: Ensure high contrast text on the result background */
+            background-color: var(--color-result-bg);
+            color: var(--color-text-highlight); /* **Changed to White Text** */
+            border: 1px solid #1677df;
+            border-radius: 8px;
+            text-align: center;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(191, 202, 212, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>D:M:S Angle Calculator 📐</h1>
+    <form method="POST">
+
+        <div class="input-group">
+            <label for="calc_type">Select Operation:</label>
+            <select name="calc_type" id="calc_type" required onchange="toggleInputs(); saveCalcType()">
+                <option value="ADD">Addition (+)</option>
+                <option value="SUB">Subtraction (-)</option>
+                <option value="MULT">Multiplication (x)</option>
+                <option value="DIV">Division (÷)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Angle A (D:M:S)</label>
+            <div class="dms-input">
+                <input type="number" name="A_d" placeholder="Degrees (D)" value="120" required>
+                <input type="number" name="A_m" placeholder="Minutes (M)" value="40" min="0" max="59" required>
+                <input type="number" name="A_s" placeholder="Seconds (S)" value="12" min="0" max="59" required>
+            </div>
+        </div>
+
+        <div id="angleBGroup" class="input-group">
+            <label>Angle B (D:M:S)</label>
+            <div class="dms-input">
+                <input type="number" name="B_d" placeholder="Degrees (D)" value="25">
+                <input type="number" name="B_m" placeholder="Minutes (M)" value="10" min="0" max="59">
+                <input type="number" name="B_s" placeholder="Seconds (S)" value="45" min="0" max="59">
+            </div>
+        </div>
+
+        <div id="factorGroup" class="input-group" style="display: none;">
+            <label>Factor (Multiplier / Divisor)</label>
+            <div class="factor-input">
+                <input type="number" name="factor" placeholder="Enter Factor (e.g., 25)" value="25" required>
+            </div>
+        </div>
+
+        <button type="submit">Calculate Angle ➡️</button>
+    </form>
+
+    {% if result %}
+    <hr style="margin: 45px 0; border: 0; border-top: 3px dashed var(--color-border);">
+    <div class="result">
+        FINAL ANSWER: {{ result | safe }}
+    </div>
+    <h2>Paper-and-Pen Steps: ✍️</h2>
+    <div class="paperwork">
+        {{ paperwork | safe }}
+    </div>
+    {% endif %}
+
+    <script>
+        const calcTypeSelect = document.getElementById('calc_type');
+        const angleBGroup = document.getElementById('angleBGroup');
+        const factorGroup = document.getElementById('factorGroup');
+        const B_inputs = angleBGroup.querySelectorAll('input');
+        const factor_input = factorGroup.querySelector('input[name="factor"]');
+
+        /**
+         * Toggles the visibility and 'required' attribute for Angle B vs Factor inputs.
+         */
+        function toggleInputs() {
+            const calcType = calcTypeSelect.value;
+            
+            if (calcType === 'ADD' || calcType === 'SUB') {
+                angleBGroup.style.display = 'block';
+                factorGroup.style.display = 'none';
+                
+                // Set required attributes for validation
+                B_inputs.forEach(input => input.setAttribute('required', 'required'));
+                factor_input.removeAttribute('required');
+
+            } else if (calcType === 'MULT' || calcType === 'DIV') {
+                angleBGroup.style.display = 'none';
+                factorGroup.style.display = 'block';
+                
+                // Set required attributes for validation
+                B_inputs.forEach(input => input.removeAttribute('required'));
+                factor_input.setAttribute('required', 'required');
+            }
+        }
+        
+        /**
+         * Saves the currently selected operation to Local Storage.
+         */
+        function saveCalcType() {
+            localStorage.setItem('dms_calc_type', calcTypeSelect.value);
+        }
+
+        /**
+         * Restores the selected operation from Local Storage on page load.
+         */
+        function restoreCalcType() {
+            const savedType = localStorage.getItem('dms_calc_type');
+            if (savedType) {
+                calcTypeSelect.value = savedType;
+            }
+            // Ensure the correct inputs are shown after restoration
+            toggleInputs();
+        }
+
+        // Run the restoration and toggle on page load
+        document.addEventListener('DOMContentLoaded', restoreCalcType);
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DMS Angle Calculator</title>
+    <style>
+        /* Modern Light Theme Color Palette */
+        :root {
+    --color-bg-primary: #343440;   /* CARD/INPUT BACKGROUND: Dark gray-purple */
+    --color-bg-secondary: #272733; /* PAGE BACKGROUND: Deep midnight blue/plum */
+    --color-text-dark: #d3e5f0;    /* MAIN TEXT: Very light lavender-white */
+    --color-text-medium: #18dae8ed;  /* LABEL/FADED TEXT: Pale gray-purple */
+    --color-accent-blue: #08f0d1;  /* ACCENT/HIGHLIGHT: Soft Lavender */
+    --color-accent-green: #ec8106; /* BUTTON COLOR: Muted bright lime */
+    --color-paperwork-bg: #2d2d3a; /* PAPERWORK/CODE BLOCK BACKGROUND */
+    --color-result-bg: #fefeff;    /* RESULT BOX BACKGROUND: Vibrant Purple */
+    --color-border: #9595b4;       /* GENERAL BORDER: Medium cool gray */
+    --color-text-highlight: #7248e4; /* RESULT BOX TEXT: Pure white */
+}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px; /* BOX SIZE: Inner spacing of the main container */
+            background-color: var(--color-bg-secondary);
+            color: var(--color-text-dark);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-size: 17px; /* FONT SIZE: Base text size for the entire page */
+        }
+        h1 {
+            color: var(--color-text-dark);
+            /* FONT SIZE: Main title size */
+            font-size: 2.3em; 
+            border-bottom: 3px solid var(--color-accent-blue);
+            padding-bottom: 15px; /* BOX SIZE: Spacing below the title/border */
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: var(--color-accent-blue);
+            /* FONT SIZE: Section title size (Paperwork) */
+            font-size: 1em; 
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        label {
+            color: var(--color-text-medium);
+            /* FONT SIZE: Label text size (e.g., 'Angle A (D:M:S)') */
+            font-size: 1.15em; 
+            margin-top: 15px;
+        }
+        .input-group {
+            /* COLOR: Background color for cards (e.g., Angle A, Angle B, etc.) */
+            background-color: var(--color-bg-primary); 
+            /* BOX SIZE: Inner spacing within the card */
+            padding: 25px; 
+            margin-bottom: 25px; /* BOX SIZE: Spacing between cards */
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .dms-input input, .factor-input input {
+            /* COLOR: Input text color */
+            color: var(--color-text-dark); 
+            /* COLOR: Input background color */
+            background-color: var(--color-bg-primary); 
+            
+            /* FONT SIZE: Text inside the input box */
+            font-size: 1.1em; 
+            /* BOX SIZE: Width of D, M, S inputs */
+            width: 70px; 
+            /* BOX SIZE: Inner spacing of the input field */
+            padding: 12px; 
+            border: 1px solid var(--color-border);
+            border-radius: 5px;
+        }
+        .factor-input input {
+            /* BOX SIZE: Width of Factor input */
+            width: 250px; 
+        }
+        select {
+            color: var(--color-text-dark);
+            background-color: var(--color-bg-primary); 
+            /* FONT SIZE: Text inside the dropdown */
+            font-size: 1.1em; 
+            /* BOX SIZE: Inner spacing of the dropdown */
+            padding: 12px; 
+            border: 1px solid var(--color-border);
+            border-radius: 5px;
+        }
+        button {
+            /* COLOR: Button background color */
+            background-color: var(--color-accent-green);
+            /* FONT SIZE: Button text size */
+            font-size: 1.2em; 
+            font-weight: bold;
+            /* BOX SIZE: Button size */
+            padding: 14px 30px; 
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #05f73a; /* COLOR: Hover state color */
+        }
+        .paperwork {
+            /* COLOR: Paperwork background color */
+            background-color: var(--color-paperwork-bg); 
+            /* BOX SIZE: Inner spacing of the paperwork box */
+            padding: 25px; 
+            /* FONT SIZE: Code block text size */
+            font-size: 1em; 
+            color: #f8fbfb; 
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+        }
+        /* --- RESULT SECTION STYLING --- */
+        .result {
+            /* COLOR: Final result box background color */
+            background-color: var(--color-result-bg); 
+            /* BOX SIZE: Inner spacing of the result box */
+            padding: 30px; 
+        
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(235, 234, 238, 0.3);
+            margin-top: 30px;
+        }
+
+        .result .result-label {
+            /* FONT SIZE: Size of "FINAL ANSWER:" */
+            font-size: 2em; 
+            color: rgba(232, 108, 13, 0.912);
+        }
+
+        .result .result-value {
+            /* FONT SIZE: Size of the angle value (e.g., 4:49:37) */
+            font-size: 2em; 
+            color: var(--color-text-highlight);
+            /* BOX SIZE: Small shadow/padding under the result text */
+            padding: 0 10px; 
+            background-color: rgba(245, 237, 237, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>D:M:S Angle Calculator 📐</h1>
+    <form method="POST">
+
+        <div class="input-group">
+            <label for="calc_type">Select Operation:</label>
+            <select name="calc_type" id="calc_type" required onchange="toggleInputs(); saveCalcType()">
+                <option value="ADD">Addition (+)</option>
+                <option value="SUB">Subtraction (-)</option>
+                <option value="MULT">Multiplication (x)</option>
+                <option value="DIV">Division (÷)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Angle A (D:M:S)</label>
+            <div class="dms-input">
+                <input type="number" name="A_d" placeholder="Degrees (D)" value="120" required>
+                <input type="number" name="A_m" placeholder="Minutes (M)" value="40" min="0" max="59" required>
+                <input type="number" name="A_s" placeholder="Seconds (S)" value="12" min="0" max="59" required>
+            </div>
+        </div>
+
+        <div id="angleBGroup" class="input-group">
+            <label>Angle B (D:M:S)</label>
+            <div class="dms-input">
+                <input type="number" name="B_d" placeholder="Degrees (D)" value="25">
+                <input type="number" name="B_m" placeholder="Minutes (M)" value="10" min="0" max="59">
+                <input type="number" name="B_s" placeholder="Seconds (S)" value="45" min="0" max="59">
+            </div>
+        </div>
+
+        <div id="factorGroup" class="input-group" style="display: none;">
+            <label>Factor (Multiplier / Divisor)</label>
+            <div class="factor-input">
+                <input type="number" name="factor" placeholder="Enter Factor (e.g., 25)" value="25" required>
+            </div>
+        </div>
+
+        <button type="submit">Calculate Angle ➡️</button>
+    </form>
+
+    {% if result %}
+    <hr style="margin: 45px 0; border: 0; border-top: 3px dashed var(--color-border);">
+    <div class="result">
+        <span class="result-label">FINAL ANSWER:</span> 
+        <span class="result-value">
+            {{ result | safe }} 
+        </span>
+        <span class="result-operation">
+            {% if calc_type_value %}
+                ({{ calc_type_value }} Operation)
+            {% endif %}
+        </span>
+    </div>
+    <h2>Paper-and-Pen Steps: ✍️</h2>
+    <div class="paperwork">
+        {{ paperwork | safe }}
+    </div>
+    {% endif %}
+
+    <script>
+        const calcTypeSelect = document.getElementById('calc_type');
+        const angleBGroup = document.getElementById('angleBGroup');
+        const factorGroup = document.getElementById('factorGroup');
+        const B_inputs = angleBGroup.querySelectorAll('input');
+        const factor_input = factorGroup.querySelector('input[name="factor"]');
+
+        /**
+         * Toggles the visibility and 'required' attribute for Angle B vs Factor inputs.
+         */
+        function toggleInputs() {
+            const calcType = calcTypeSelect.value;
+            
+            if (calcType === 'ADD' || calcType === 'SUB') {
+                angleBGroup.style.display = 'block';
+                factorGroup.style.display = 'none';
+                
+                // Set required attributes for validation
+                B_inputs.forEach(input => input.setAttribute('required', 'required'));
+                factor_input.removeAttribute('required');
+
+            } else if (calcType === 'MULT' || calcType === 'DIV') {
+                angleBGroup.style.display = 'none';
+                factorGroup.style.display = 'block';
+                
+                // Set required attributes for validation
+                B_inputs.forEach(input => input.removeAttribute('required'));
+                factor_input.setAttribute('required', 'required');
+            }
+        }
+        
+        /**
+         * Saves the currently selected operation to Local Storage.
+         */
+        function saveCalcType() {
+            localStorage.setItem('dms_calc_type', calcTypeSelect.value);
+        }
+
+        /**
+         * Restores the selected operation from Local Storage on page load.
+         */
+        function restoreCalcType() {
+            const savedType = localStorage.getItem('dms_calc_type');
+            if (savedType) {
+                calcTypeSelect.value = savedType;
+            }
+            // Ensure the correct inputs are shown after restoration
+            toggleInputs();
+        }
+
+        // Run the restoration and toggle on page load
+        document.addEventListener('DOMContentLoaded', restoreCalcType);
+    </script>
+</body>
+</html>
